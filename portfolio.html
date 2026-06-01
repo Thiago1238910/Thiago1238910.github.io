@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portfólio · 2frame Fotografia</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--creme:#EDE3CE;--branco:#FDFAF6;--escuro:#1A1410;--tan:#B8967A;--tan-lt:#D4B89A;--muted:#8A7060;--border:rgba(61,35,20,0.14)}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--branco);color:var(--escuro);overflow-x:hidden}
+nav{position:fixed;top:0;left:0;right:0;z-index:200;padding:0 40px;height:68px;display:flex;align-items:center;justify-content:space-between;background:rgba(26,20,16,0.94);backdrop-filter:blur(10px);border-bottom:1px solid rgba(184,150,122,0.12)}
+.nav-logo{font-family:'Cormorant Garamond',serif;font-size:26px;font-style:italic;color:var(--tan-lt);text-decoration:none}
+.nav-menu{display:flex;align-items:center;gap:28px;list-style:none}
+.nav-menu a{font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(237,227,206,0.7);text-decoration:none;transition:color 0.2s;padding-bottom:2px;border-bottom:1px solid transparent}
+.nav-menu a:hover,.nav-menu a.active{color:var(--tan-lt);border-bottom-color:var(--tan)}
+.nav-cta{font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--tan-lt);text-decoration:none;border:1px solid rgba(184,150,122,0.4);padding:8px 18px;transition:all 0.25s}
+.nav-cta:hover{background:var(--tan);color:var(--escuro)}
+.nav-hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px}
+.nav-hamburger span{display:block;width:22px;height:1px;background:var(--tan-lt)}
+@media(max-width:768px){
+  .nav-hamburger{display:flex}
+  .nav-menu{display:none;flex-direction:column;gap:0;position:absolute;top:68px;left:0;right:0;background:rgba(26,20,16,0.98);padding:16px 0}
+  .nav-menu.open{display:flex}
+  .nav-menu li{border-bottom:1px solid rgba(184,150,122,0.08)}
+  .nav-menu a{display:block;padding:14px 40px;color:var(--muted)}
+  .nav-cta{display:none}
+}
+.page-header{padding:140px 24px 80px;background:var(--escuro);text-align:center;position:relative;overflow:hidden}
+.page-header-bg{position:absolute;inset:0;background:radial-gradient(ellipse 70% 50% at 50% 40%,rgba(184,150,122,0.10) 0%,transparent 70%)}
+.page-eyebrow{font-size:10px;letter-spacing:0.35em;color:var(--tan);text-transform:uppercase;margin-bottom:20px;position:relative}
+.page-title{font-family:'Cormorant Garamond',serif;font-size:clamp(40px,7vw,80px);font-weight:300;color:var(--creme);line-height:1;position:relative}
+.page-title em{font-style:italic;color:var(--tan-lt)}
+.page-desc{margin-top:20px;font-size:15px;font-weight:300;color:var(--muted);max-width:480px;margin-left:auto;margin-right:auto;line-height:1.8;position:relative}
+.filters{padding:48px 24px 0;display:flex;justify-content:center;gap:12px;flex-wrap:wrap}
+.filter-btn{font-size:11px;letter-spacing:0.2em;text-transform:uppercase;padding:10px 24px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;transition:all 0.25s;font-family:'DM Sans',sans-serif}
+.filter-btn:hover,.filter-btn.active{background:var(--escuro);color:var(--tan-lt);border-color:var(--escuro)}
+.portfolio-section{padding:40px 20px 80px;max-width:1200px;margin:0 auto}
+.portfolio-grid{columns:3 280px;gap:14px}
+@media(max-width:600px){.portfolio-grid{columns:2 140px;gap:8px}}
+.portfolio-item{break-inside:avoid;margin-bottom:14px;position:relative;overflow:hidden;cursor:pointer}
+.portfolio-item img{width:100%;display:block;transition:transform 0.5s;image-orientation:from-image}
+.portfolio-item:hover img{transform:scale(1.05)}
+.portfolio-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(26,20,16,0.85) 0%,transparent 60%);opacity:0;transition:opacity 0.3s;display:flex;flex-direction:column;justify-content:flex-end;padding:20px}
+.portfolio-item:hover .portfolio-overlay{opacity:1}
+.overlay-cat{font-size:10px;letter-spacing:0.25em;text-transform:uppercase;color:var(--tan);margin-bottom:5px}
+.overlay-title{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:300;color:var(--creme)}
+.lightbox{display:none;position:fixed;inset:0;background:rgba(10,8,6,0.97);z-index:1000;justify-content:center;align-items:center;padding:20px}
+.lightbox.open{display:flex}
+.lightbox-inner{position:relative;max-width:92vw;max-height:92vh;display:flex;flex-direction:column;align-items:center}
+.lightbox-inner img{max-width:88vw;max-height:85vh;object-fit:contain;display:block;image-orientation:from-image}
+.lightbox-close{position:absolute;top:-44px;right:0;color:var(--creme);font-size:28px;cursor:pointer;background:none;border:none;opacity:0.8}
+.lightbox-close:hover{opacity:1}
+.lightbox-nav{position:absolute;top:50%;transform:translateY(-50%);background:rgba(184,150,122,0.15);border:none;color:var(--creme);font-size:28px;width:48px;height:48px;cursor:pointer;transition:background 0.2s;display:flex;align-items:center;justify-content:center}
+.lightbox-nav:hover{background:rgba(184,150,122,0.4)}
+.lb-prev{left:-60px}.lb-next{right:-60px}
+@media(max-width:700px){.lb-prev{left:-2px}.lb-next{right:-2px}}
+.lightbox-caption{margin-top:12px;color:var(--muted);font-size:13px;letter-spacing:0.1em}
+.portfolio-cta{text-align:center;padding:0 24px 100px}
+.portfolio-cta p{font-family:'Cormorant Garamond',serif;font-size:22px;font-style:italic;color:var(--muted);margin-bottom:32px}
+.btn-wa{display:inline-flex;align-items:center;gap:12px;padding:16px 48px;background:var(--escuro);color:var(--tan-lt);text-decoration:none;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;transition:all 0.3s}
+.btn-wa:hover{background:var(--tan);color:var(--escuro)}
+.btn-wa svg{width:18px;height:18px;fill:currentColor}
+footer{padding:32px 24px;background:var(--escuro);display:flex;align-items:center;justify-content:center;gap:20px;flex-wrap:wrap;border-top:1px solid rgba(184,150,122,0.1)}
+footer .logo{font-family:'Cormorant Garamond',serif;font-size:20px;font-style:italic;color:rgba(212,184,154,0.5)}
+footer p{font-size:12px;color:var(--muted)}
+.wa-float{position:fixed;bottom:26px;right:26px;width:52px;height:52px;background:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;text-decoration:none;z-index:300;box-shadow:0 4px 16px rgba(37,211,102,0.35);transition:transform 0.2s}
+.wa-float:hover{transform:scale(1.08)}
+.wa-float svg{width:25px;height:25px;fill:#fff}
+</style>
+</head>
+<body>
+<nav id="nav">
+  <a href="index.html" class="nav-logo">2frame</a>
+  <ul class="nav-menu" id="nav-menu">
+    <li><a href="casamento.html">Casamento</a></li>
+    <li><a href="ensaios.html">Ensaios</a></li>
+    <li><a href="eventos.html">Eventos</a></li>
+    <li><a href="aniversarios.html">Aniversários</a></li>
+    <li><a href="portfolio.html" class="active">Portfólio</a></li>
+    <li><a href="contrato.html">Contrato</a></li>
+    <li><a href="login.html">Área do Cliente</a></li>
+  </ul>
+  <a href="https://wa.me/5599985311384?text=Olá!%20Quero%20saber%20mais%20sobre%20a%202frame%20Fotografia" class="nav-cta" target="_blank">Orçamento</a>
+  <div class="nav-hamburger" id="ham"><span></span><span></span><span></span></div>
+</nav>
+
+<section class="page-header">
+  <div class="page-header-bg"></div>
+  <p class="page-eyebrow">2frame Fotografia</p>
+  <h1 class="page-title">Nosso <em>Portfólio</em></h1>
+  <p class="page-desc">Cada imagem conta uma história. Explore os momentos que eternizamos com paixão e dedicação.</p>
+</section>
+
+<div class="filters">
+  <button class="filter-btn active" data-filter="all">Todos</button>
+  <button class="filter-btn" data-filter="casamento">Casamento</button>
+  <button class="filter-btn" data-filter="ensaio">Ensaios</button>
+  <button class="filter-btn" data-filter="aniversario">Aniversários</button>
+  <button class="filter-btn" data-filter="evento">Eventos</button>
+</div>
+
+<section class="portfolio-section">
+  <div class="portfolio-grid" id="grid">
+    <div class="portfolio-item" data-cat="casamento" onclick="openLightbox(0)">
+      <img src="fotos/DSCF3405.jpg" alt="Casamento" loading="lazy">
+      <div class="portfolio-overlay"><span class="overlay-cat">Casamento</span><span class="overlay-title">Casamento</span></div>
+    </div>
+    <div class="portfolio-item" data-cat="ensaio" onclick="openLightbox(1)">
+      <img src="fotos/DSC06708.jpg" alt="Ensaio de Família" loading="lazy">
+      <div class="portfolio-overlay"><span class="overlay-cat">Ensaio Fotográfico</span><span class="overlay-title">Ensaio de Família</span></div>
+    </div>
+    <div class="portfolio-item" data-cat="ensaio" onclick="openLightbox(2)">
+      <img src="fotos/DSC06710.jpg" alt="Ensaio de Família" loading="lazy">
+      <div class="portfolio-overlay"><span class="overlay-cat">Ensaio Fotográfico</span><span class="overlay-title">Ensaio de Família</span></div>
+    </div>
+    <div class="portfolio-item" data-cat="ensaio" onclick="openLightbox(3)">
+      <img src="fotos/DSC06771.jpg" alt="Ensaio Individual" loading="lazy">
+      <div class="portfolio-overlay"><span class="overlay-cat">Ensaio Fotográfico</span><span class="overlay-title">Ensaio Individual</span></div>
+    </div>
+    <div class="portfolio-item" data-cat="ensaio" onclick="openLightbox(4)">
+      <img src="fotos/DSC06977.jpg" alt="Ensaio de Casal" loading="lazy">
+      <div class="portfolio-overlay"><span class="overlay-cat">Ensaio Fotográfico</span><span class="overlay-title">Ensaio de Casal</span></div>
+    </div>
+    <div class="portfolio-item" data-cat="ensaio" onclick="openLightbox(5)">
+      <img src="fotos/DSC07089.jpg" alt="Ensaio Profissional" loading="lazy">
+      <div class="portfolio-overlay"><span class="overlay-cat">Ensaio Fotográfico</span><span class="overlay-title">Ensaio Profissional</span></div>
+    </div>
+    <div class="portfolio-item" data-cat="ensaio" onclick="openLightbox(6)">
+      <img src="fotos/DSC07135.jpg" alt="Ensaio Profissional" loading="lazy">
+      <div class="portfolio-overlay"><span class="overlay-cat">Ensaio Fotográfico</span><span class="overlay-title">Ensaio Profissional</span></div>
+    </div>
+    <div class="portfolio-item" data-cat="ensaio" onclick="openLightbox(7)">
+      <img src="fotos/DSC07196.jpg" alt="Ensaio Individual" loading="lazy">
+      <div class="portfolio-overlay"><span class="overlay-cat">Ensaio Fotográfico</span><span class="overlay-title">Ensaio Individual</span></div>
+    </div>
+    <div class="portfolio-item" data-cat="ensaio" onclick="openLightbox(8)">
+      <img src="fotos/DSC07286.jpg" alt="Ensaio Individual" loading="lazy">
+      <div class="portfolio-overlay"><span class="overlay-cat">Ensaio Fotográfico</span><span class="overlay-title">Ensaio Individual</span></div>
+    </div>
+    <div class="portfolio-item" data-cat="ensaio" onclick="openLightbox(9)">
+      <img src="fotos/DSC07318.jpg" alt="Ensaio Individual" loading="lazy">
+      <div class="portfolio-overlay"><span class="overlay-cat">Ensaio Fotográfico</span><span class="overlay-title">Ensaio Individual</span></div>
+    </div>
+    <div class="portfolio-item" data-cat="ensaio" onclick="openLightbox(10)">
+      <img src="fotos/DSC07352.jpg" alt="Ensaio Individual" loading="lazy">
+      <div class="portfolio-overlay"><span class="overlay-cat">Ensaio Fotográfico</span><span class="overlay-title">Ensaio Individual</span></div>
+    </div>
+    <div class="portfolio-item" data-cat="ensaio" onclick="openLightbox(11)">
+      <img src="fotos/DSC07464.jpg" alt="Ensaio Individual" loading="lazy">
+      <div class="portfolio-overlay"><span class="overlay-cat">Ensaio Fotográfico</span><span class="overlay-title">Ensaio Individual</span></div>
+    </div>
+    <div class="portfolio-item" data-cat="ensaio" onclick="openLightbox(12)">
+      <img src="fotos/DSC07515.jpg" alt="Ensaio de Casal" loading="lazy">
+      <div class="portfolio-overlay"><span class="overlay-cat">Ensaio Fotográfico</span><span class="overlay-title">Ensaio de Casal</span></div>
+    </div>
+    <div class="portfolio-item" data-cat="ensaio" onclick="openLightbox(13)">
+      <img src="fotos/DSC08628.jpg" alt="Ensaio Individual" loading="lazy">
+      <div class="portfolio-overlay"><span class="overlay-cat">Ensaio Fotográfico</span><span class="overlay-title">Ensaio Individual</span></div>
+    </div>
+    <div class="portfolio-item" data-cat="ensaio" onclick="openLightbox(14)">
+      <img src="fotos/DSC08914.jpg" alt="Ensaio Individual" loading="lazy">
+      <div class="portfolio-overlay"><span class="overlay-cat">Ensaio Fotográfico</span><span class="overlay-title">Ensaio Individual</span></div>
+    </div>
+    <div class="portfolio-item" data-cat="ensaio" onclick="openLightbox(15)">
+      <img src="fotos/DSC09067.jpg" alt="Ensaio Individual" loading="lazy">
+      <div class="portfolio-overlay"><span class="overlay-cat">Ensaio Fotográfico</span><span class="overlay-title">Ensaio Individual</span></div>
+    </div>
+    <div class="portfolio-item" data-cat="ensaio" onclick="openLightbox(16)">
+      <img src="fotos/IMG_0618.jpg" alt="Ensaio Individual" loading="lazy">
+      <div class="portfolio-overlay"><span class="overlay-cat">Ensaio Fotográfico</span><span class="overlay-title">Ensaio Individual</span></div>
+    </div>
+    <div class="portfolio-item" data-cat="ensaio" onclick="openLightbox(17)">
+      <img src="fotos/DSC01488.jpg" alt="Ensaio de 15 Anos" loading="lazy">
+      <div class="portfolio-overlay"><span class="overlay-cat">Ensaio Fotográfico</span><span class="overlay-title">Ensaio de 15 Anos</span></div>
+    </div>
+    <div class="portfolio-item" data-cat="ensaio" onclick="openLightbox(18)">
+      <img src="fotos/DSC01489.jpg" alt="Ensaio de 15 Anos" loading="lazy">
+      <div class="portfolio-overlay"><span class="overlay-cat">Ensaio Fotográfico</span><span class="overlay-title">Ensaio de 15 Anos</span></div>
+    </div>
+    <div class="portfolio-item" data-cat="ensaio" onclick="openLightbox(19)">
+      <img src="fotos/DSC03710.jpg" alt="Ensaio de Família" loading="lazy">
+      <div class="portfolio-overlay"><span class="overlay-cat">Ensaio Fotográfico</span><span class="overlay-title">Ensaio de Família</span></div>
+    </div>
+    <div class="portfolio-item" data-cat="ensaio" onclick="openLightbox(20)">
+      <img src="fotos/DSC03714.jpg" alt="Ensaio de Família" loading="lazy">
+      <div class="portfolio-overlay"><span class="overlay-cat">Ensaio Fotográfico</span><span class="overlay-title">Ensaio de Família</span></div>
+    </div>
+    <div class="portfolio-item" data-cat="ensaio" onclick="openLightbox(21)">
+      <img src="fotos/DSC03726.jpg" alt="Ensaio de Família" loading="lazy">
+      <div class="portfolio-overlay"><span class="overlay-cat">Ensaio Fotográfico</span><span class="overlay-title">Ensaio de Família</span></div>
+    </div>
+    <div class="portfolio-item" data-cat="ensaio" onclick="openLightbox(22)">
+      <img src="fotos/DSC03768.jpg" alt="Ensaio de Família" loading="lazy">
+      <div class="portfolio-overlay"><span class="overlay-cat">Ensaio Fotográfico</span><span class="overlay-title">Ensaio de Família</span></div>
+    </div>
+    <div class="portfolio-item" data-cat="ensaio" onclick="openLightbox(23)">
+      <img src="fotos/DSC03782.jpg" alt="Ensaio de Família" loading="lazy">
+      <div class="portfolio-overlay"><span class="overlay-cat">Ensaio Fotográfico</span><span class="overlay-title">Ensaio de Família</span></div>
+    </div>
+    <div class="portfolio-item" data-cat="ensaio" onclick="openLightbox(24)">
+      <img src="fotos/DSC03819.jpg" alt="Ensaio de Família" loading="lazy">
+      <div class="portfolio-overlay"><span class="overlay-cat">Ensaio Fotográfico</span><span class="overlay-title">Ensaio de Família</span></div>
+    </div>
+    <div class="portfolio-item" data-cat="ensaio" onclick="openLightbox(25)">
+      <img src="fotos/_SON9024_jpghh_jpg.jpg" alt="Ensaio Individual" loading="lazy">
+      <div class="portfolio-overlay"><span class="overlay-cat">Ensaio Fotográfico</span><span class="overlay-title">Ensaio Individual</span></div>
+    </div>
+    <div class="portfolio-item" data-cat="ensaio" onclick="openLightbox(26)">
+      <img src="fotos/DSCF8583.jpg" alt="Ensaio Profissional" loading="lazy">
+      <div class="portfolio-overlay"><span class="overlay-cat">Ensaio Fotográfico</span><span class="overlay-title">Ensaio Profissional</span></div>
+    </div>
+    <div class="portfolio-item" data-cat="ensaio" onclick="openLightbox(27)">
+      <img src="fotos/DSCF8725.jpg" alt="Ensaio Profissional" loading="lazy">
+      <div class="portfolio-overlay"><span class="overlay-cat">Ensaio Fotográfico</span><span class="overlay-title">Ensaio Profissional</span></div>
+    </div>
+    <div class="portfolio-item" data-cat="ensaio" onclick="openLightbox(28)">
+      <img src="fotos/DSCF8749.jpg" alt="Ensaio Profissional" loading="lazy">
+      <div class="portfolio-overlay"><span class="overlay-cat">Ensaio Fotográfico</span><span class="overlay-title">Ensaio Profissional</span></div>
+    </div>
+    <div class="portfolio-item" data-cat="ensaio" onclick="openLightbox(29)">
+      <img src="fotos/DSCF8823.jpg" alt="Ensaio Profissional" loading="lazy">
+      <div class="portfolio-overlay"><span class="overlay-cat">Ensaio Fotográfico</span><span class="overlay-title">Ensaio Profissional</span></div>
+    </div>
+    <div class="portfolio-item" data-cat="ensaio" onclick="openLightbox(30)">
+      <img src="fotos/DSCF8829.jpg" alt="Ensaio Profissional" loading="lazy">
+      <div class="portfolio-overlay"><span class="overlay-cat">Ensaio Fotográfico</span><span class="overlay-title">Ensaio Profissional</span></div>
+    </div>
+    <div class="portfolio-item" data-cat="ensaio" onclick="openLightbox(31)">
+      <img src="fotos/DSCF8857.jpg" alt="Ensaio Profissional" loading="lazy">
+      <div class="portfolio-overlay"><span class="overlay-cat">Ensaio Fotográfico</span><span class="overlay-title">Ensaio Profissional</span></div>
+    </div>
+    <div class="portfolio-item" data-cat="ensaio" onclick="openLightbox(32)">
+      <img src="fotos/15_ANOS___10__jpg.jpg" alt="Ensaio de 15 Anos" loading="lazy">
+      <div class="portfolio-overlay"><span class="overlay-cat">Ensaio Fotográfico</span><span class="overlay-title">Ensaio de 15 Anos</span></div>
+    </div>
+    <div class="portfolio-item" data-cat="ensaio" onclick="openLightbox(33)">
+      <img src="fotos/15_ANOS___19__jpg.jpg" alt="Ensaio de 15 Anos" loading="lazy">
+      <div class="portfolio-overlay"><span class="overlay-cat">Ensaio Fotográfico</span><span class="overlay-title">Ensaio de 15 Anos</span></div>
+    </div>
+    <div class="portfolio-item" data-cat="ensaio" onclick="openLightbox(34)">
+      <img src="fotos/_MIR3179_pngdddd.jpg" alt="Ensaio de 15 Anos" loading="lazy">
+      <div class="portfolio-overlay"><span class="overlay-cat">Ensaio Fotográfico</span><span class="overlay-title">Ensaio de 15 Anos</span></div>
+    </div>
+    <div class="portfolio-item" data-cat="ensaio" onclick="openLightbox(35)">
+      <img src="fotos/DSC08093.jpg" alt="Aniversário de 1 Ano" loading="lazy">
+      <div class="portfolio-overlay"><span class="overlay-cat">Aniversário</span><span class="overlay-title">Aniversário de 1 Ano</span></div>
+    </div>
+    <div class="portfolio-item" data-cat="ensaio" onclick="openLightbox(36)">
+      <img src="fotos/DSC08356.jpg" alt="Aniversário de 1 Ano" loading="lazy">
+      <div class="portfolio-overlay"><span class="overlay-cat">Aniversário</span><span class="overlay-title">Aniversário de 1 Ano</span></div>
+    </div>
+    <div class="portfolio-item" data-cat="ensaio" onclick="openLightbox(37)">
+      <img src="fotos/DSC08495.jpg" alt="Aniversário de 1 Ano" loading="lazy">
+      <div class="portfolio-overlay"><span class="overlay-cat">Aniversário</span><span class="overlay-title">Aniversário de 1 Ano</span></div>
+    </div>
+    <div class="portfolio-item" data-cat="ensaio" onclick="openLightbox(38)">
+      <img src="fotos/DSC08504.jpg" alt="Aniversário de 1 Ano" loading="lazy">
+      <div class="portfolio-overlay"><span class="overlay-cat">Aniversário</span><span class="overlay-title">Aniversário de 1 Ano</span></div>
+    </div>
+    <div class="portfolio-item" data-cat="ensaio" onclick="openLightbox(39)">
+      <img src="fotos/DSC08610.jpg" alt="Aniversário de 1 Ano" loading="lazy">
+      <div class="portfolio-overlay"><span class="overlay-cat">Aniversário</span><span class="overlay-title">Aniversário de 1 Ano</span></div>
+    </div>
+    <div class="portfolio-item" data-cat="ensaio" onclick="openLightbox(40)">
+      <img src="fotos/DSC08620.jpg" alt="Aniversário de 1 Ano" loading="lazy">
+      <div class="portfolio-overlay"><span class="overlay-cat">Aniversário</span><span class="overlay-title">Aniversário de 1 Ano</span></div>
+    </div>
+    <div class="portfolio-item" data-cat="ensaio" onclick="openLightbox(41)">
+      <img src="fotos/DSC08709.jpg" alt="Aniversário de 1 Ano" loading="lazy">
+      <div class="portfolio-overlay"><span class="overlay-cat">Aniversário</span><span class="overlay-title">Aniversário de 1 Ano</span></div>
+    </div>
+    <div class="portfolio-item" data-cat="ensaio" onclick="openLightbox(42)">
+      <img src="fotos/DSC08823.jpg" alt="Aniversário de 1 Ano" loading="lazy">
+      <div class="portfolio-overlay"><span class="overlay-cat">Aniversário</span><span class="overlay-title">Aniversário de 1 Ano</span></div>
+    </div>
+    <div class="portfolio-item" data-cat="aniversario" onclick="openLightbox(43)">
+      <img src="fotos/ELLOAH-22_2.jpg" alt="15 Anos — Elloah" loading="lazy">
+      <div class="portfolio-overlay"><span class="overlay-cat">Aniversário</span><span class="overlay-title">15 Anos — Elloah</span></div>
+    </div>
+    <div class="portfolio-item" data-cat="aniversario" onclick="openLightbox(44)">
+      <img src="fotos/ELLOAH-29.jpg" alt="15 Anos — Elloah" loading="lazy">
+      <div class="portfolio-overlay"><span class="overlay-cat">Aniversário</span><span class="overlay-title">15 Anos — Elloah</span></div>
+    </div>
+    <div class="portfolio-item" data-cat="aniversario" onclick="openLightbox(45)">
+      <img src="fotos/ELLOAH-31.jpg" alt="15 Anos — Elloah" loading="lazy">
+      <div class="portfolio-overlay"><span class="overlay-cat">Aniversário</span><span class="overlay-title">15 Anos — Elloah</span></div>
+    </div>
+    <div class="portfolio-item" data-cat="aniversario" onclick="openLightbox(46)">
+      <img src="fotos/ELLOAH-34_2.jpg" alt="15 Anos — Elloah" loading="lazy">
+      <div class="portfolio-overlay"><span class="overlay-cat">Aniversário</span><span class="overlay-title">15 Anos — Elloah</span></div>
+    </div>
+    <div class="portfolio-item" data-cat="aniversario" onclick="openLightbox(47)">
+      <img src="fotos/15_ANOS_-90.jpg" alt="Aniversário de 15 Anos" loading="lazy">
+      <div class="portfolio-overlay"><span class="overlay-cat">Aniversário</span><span class="overlay-title">Aniversário de 15 Anos</span></div>
+    </div>
+    <div class="portfolio-item" data-cat="aniversario" onclick="openLightbox(48)">
+      <img src="fotos/DSC06058.jpg" alt="Aniversário de 15 Anos" loading="lazy">
+      <div class="portfolio-overlay"><span class="overlay-cat">Aniversário</span><span class="overlay-title">Aniversário de 15 Anos</span></div>
+    </div>
+    <div class="portfolio-item" data-cat="evento" onclick="openLightbox(49)">
+      <img src="fotos/DSC01033-2.jpg" alt="Evento" loading="lazy">
+      <div class="portfolio-overlay"><span class="overlay-cat">Evento</span><span class="overlay-title">Evento</span></div>
+    </div>
+    <div class="portfolio-item" data-cat="evento" onclick="openLightbox(50)">
+      <img src="fotos/DSCF1820_jpg.jpg" alt="Evento" loading="lazy">
+      <div class="portfolio-overlay"><span class="overlay-cat">Evento</span><span class="overlay-title">Evento</span></div>
+    </div>
+    <div class="portfolio-item" data-cat="evento" onclick="openLightbox(51)">
+      <img src="fotos/DSCF2355_jpg.jpg" alt="Evento" loading="lazy">
+      <div class="portfolio-overlay"><span class="overlay-cat">Evento</span><span class="overlay-title">Evento</span></div>
+    </div>
+    <div class="portfolio-item" data-cat="evento" onclick="openLightbox(52)">
+      <img src="fotos/DSCF2386_jpg.jpg" alt="Evento" loading="lazy">
+      <div class="portfolio-overlay"><span class="overlay-cat">Evento</span><span class="overlay-title">Evento</span></div>
+    </div>
+    <div class="portfolio-item" data-cat="evento" onclick="openLightbox(53)">
+      <img src="fotos/_MIR8528_JPG.jpg" alt="Evento" loading="lazy">
+      <div class="portfolio-overlay"><span class="overlay-cat">Evento</span><span class="overlay-title">Evento</span></div>
+    </div>
+    <div class="portfolio-item" data-cat="evento" onclick="openLightbox(54)">
+      <img src="fotos/_MIR8992_jpg.jpg" alt="Evento" loading="lazy">
+      <div class="portfolio-overlay"><span class="overlay-cat">Evento</span><span class="overlay-title">Evento</span></div>
+    </div>
+    <div class="portfolio-item" data-cat="evento" onclick="openLightbox(55)">
+      <img src="fotos/_MIR9967_JPG.jpg" alt="Evento" loading="lazy">
+      <div class="portfolio-overlay"><span class="overlay-cat">Evento</span><span class="overlay-title">Evento</span></div>
+    </div>
+    <div class="portfolio-item" data-cat="evento" onclick="openLightbox(56)">
+      <img src="fotos/_MIR9979_JPG.jpg" alt="Evento" loading="lazy">
+      <div class="portfolio-overlay"><span class="overlay-cat">Evento</span><span class="overlay-title">Evento</span></div>
+    </div>
+  </div>
+</section>
+
+<div class="lightbox" id="lb">
+  <div class="lightbox-inner">
+    <button class="lightbox-close" onclick="closeLb()">✕</button>
+    <button class="lightbox-nav lb-prev" onclick="navLb(-1)">&#8249;</button>
+    <button class="lightbox-nav lb-next" onclick="navLb(1)">&#8250;</button>
+    <img id="lb-img" src="" alt="">
+    <p class="lightbox-caption" id="lb-cap"></p>
+  </div>
+</div>
+
+<div class="portfolio-cta">
+  <p>Gostou do nosso trabalho? Vamos conversar sobre o seu momento especial.</p>
+  <a href="https://wa.me/5599985311384?text=Olá!%20Vi%20o%20portfólio%20da%202frame!" class="btn-wa" target="_blank">
+    <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+    Falar pelo WhatsApp
+  </a>
+</div>
+
+<footer>
+  <span class="logo">2frame</span>
+  <p>© 2025 · 2frame Fotografia · Todos os direitos reservados</p>
+</footer>
+
+<a href="https://wa.me/5599985311384" class="wa-float" target="_blank">
+  <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+</a>
+
+<script>
+document.getElementById('ham').addEventListener('click',()=>document.getElementById('nav-menu').classList.toggle('open'));
+
+// FILTRO
+document.querySelectorAll('.filter-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    const f=btn.dataset.filter;
+    document.querySelectorAll('#grid .portfolio-item').forEach(el=>{
+      el.style.display=(f==='all'||el.dataset.cat===f)?'block':'none';
+    });
+  });
+});
+
+// LIGHTBOX — navega apenas nas visíveis
+const photos = [
+  {src:"fotos/DSCF3405.jpg",caption:"Casamento"},
+  {src:"fotos/DSC06708.jpg",caption:"Ensaio de Família"},
+  {src:"fotos/DSC06710.jpg",caption:"Ensaio de Família"},
+  {src:"fotos/DSC06771.jpg",caption:"Ensaio Individual"},
+  {src:"fotos/DSC06977.jpg",caption:"Ensaio de Casal"},
+  {src:"fotos/DSC07089.jpg",caption:"Ensaio Profissional"},
+  {src:"fotos/DSC07135.jpg",caption:"Ensaio Profissional"},
+  {src:"fotos/DSC07196.jpg",caption:"Ensaio Individual"},
+  {src:"fotos/DSC07286.jpg",caption:"Ensaio Individual"},
+  {src:"fotos/DSC07318.jpg",caption:"Ensaio Individual"},
+  {src:"fotos/DSC07352.jpg",caption:"Ensaio Individual"},
+  {src:"fotos/DSC07464.jpg",caption:"Ensaio Individual"},
+  {src:"fotos/DSC07515.jpg",caption:"Ensaio de Casal"},
+  {src:"fotos/DSC08628.jpg",caption:"Ensaio Individual"},
+  {src:"fotos/DSC08914.jpg",caption:"Ensaio Individual"},
+  {src:"fotos/DSC09067.jpg",caption:"Ensaio Individual"},
+  {src:"fotos/IMG_0618.jpg",caption:"Ensaio Individual"},
+  {src:"fotos/DSC01488.jpg",caption:"Ensaio de 15 Anos"},
+  {src:"fotos/DSC01489.jpg",caption:"Ensaio de 15 Anos"},
+  {src:"fotos/DSC03710.jpg",caption:"Ensaio de Família"},
+  {src:"fotos/DSC03714.jpg",caption:"Ensaio de Família"},
+  {src:"fotos/DSC03726.jpg",caption:"Ensaio de Família"},
+  {src:"fotos/DSC03768.jpg",caption:"Ensaio de Família"},
+  {src:"fotos/DSC03782.jpg",caption:"Ensaio de Família"},
+  {src:"fotos/DSC03819.jpg",caption:"Ensaio de Família"},
+  {src:"fotos/_SON9024_jpghh_jpg.jpg",caption:"Ensaio Individual"},
+  {src:"fotos/DSCF8583.jpg",caption:"Ensaio Profissional"},
+  {src:"fotos/DSCF8725.jpg",caption:"Ensaio Profissional"},
+  {src:"fotos/DSCF8749.jpg",caption:"Ensaio Profissional"},
+  {src:"fotos/DSCF8823.jpg",caption:"Ensaio Profissional"},
+  {src:"fotos/DSCF8829.jpg",caption:"Ensaio Profissional"},
+  {src:"fotos/DSCF8857.jpg",caption:"Ensaio Profissional"},
+  {src:"fotos/15_ANOS___10__jpg.jpg",caption:"Ensaio de 15 Anos"},
+  {src:"fotos/15_ANOS___19__jpg.jpg",caption:"Ensaio de 15 Anos"},
+  {src:"fotos/_MIR3179_pngdddd.jpg",caption:"Ensaio de 15 Anos"},
+  {src:"fotos/DSC08093.jpg",caption:"Aniversário de 1 Ano"},
+  {src:"fotos/DSC08356.jpg",caption:"Aniversário de 1 Ano"},
+  {src:"fotos/DSC08495.jpg",caption:"Aniversário de 1 Ano"},
+  {src:"fotos/DSC08504.jpg",caption:"Aniversário de 1 Ano"},
+  {src:"fotos/DSC08610.jpg",caption:"Aniversário de 1 Ano"},
+  {src:"fotos/DSC08620.jpg",caption:"Aniversário de 1 Ano"},
+  {src:"fotos/DSC08709.jpg",caption:"Aniversário de 1 Ano"},
+  {src:"fotos/DSC08823.jpg",caption:"Aniversário de 1 Ano"},
+  {src:"fotos/ELLOAH-22_2.jpg",caption:"15 Anos — Elloah"},
+  {src:"fotos/ELLOAH-29.jpg",caption:"15 Anos — Elloah"},
+  {src:"fotos/ELLOAH-31.jpg",caption:"15 Anos — Elloah"},
+  {src:"fotos/ELLOAH-34_2.jpg",caption:"15 Anos — Elloah"},
+  {src:"fotos/15_ANOS_-90.jpg",caption:"Aniversário de 15 Anos"},
+  {src:"fotos/DSC06058.jpg",caption:"Aniversário de 15 Anos"},
+  {src:"fotos/DSC01033-2.jpg",caption:"Evento"},
+  {src:"fotos/DSCF1820_jpg.jpg",caption:"Evento"},
+  {src:"fotos/DSCF2355_jpg.jpg",caption:"Evento"},
+  {src:"fotos/DSCF2386_jpg.jpg",caption:"Evento"},
+  {src:"fotos/_MIR8528_JPG.jpg",caption:"Evento"},
+  {src:"fotos/_MIR8992_jpg.jpg",caption:"Evento"},
+  {src:"fotos/_MIR9967_JPG.jpg",caption:"Evento"},
+  {src:"fotos/_MIR9979_JPG.jpg",caption:"Evento"},
+];
+
+let visiblePhotos=[], cur=0;
+
+function openLightbox(idx){
+  visiblePhotos=[...document.querySelectorAll('#grid .portfolio-item')]
+    .filter(el=>el.style.display!=='none')
+    .map(el=>{
+      const i=parseInt(el.getAttribute('onclick').match(/\d+/)[0]);
+      return photos[i];
+    });
+  const clicked=photos[idx];
+  cur=visiblePhotos.findIndex(p=>p.src===clicked.src);
+  if(cur<0)cur=0;
+  updateLb();
+  document.getElementById('lb').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeLb(){document.getElementById('lb').classList.remove('open');document.body.style.overflow='';}
+function navLb(d){cur=(cur+d+visiblePhotos.length)%visiblePhotos.length;updateLb();}
+function updateLb(){
+  const p=visiblePhotos[cur]||photos[0];
+  document.getElementById('lb-img').src=p.src;
+  document.getElementById('lb-cap').textContent=p.caption;
+}
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape')closeLb();
+  if(e.key==='ArrowLeft')navLb(-1);
+  if(e.key==='ArrowRight')navLb(1);
+});
+document.getElementById('lb').addEventListener('click',e=>{if(e.target===e.currentTarget)closeLb();});
+</script>
+</body>
+</html>
